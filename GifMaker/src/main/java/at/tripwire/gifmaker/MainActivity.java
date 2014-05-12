@@ -13,6 +13,7 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -69,6 +70,7 @@ public class MainActivity extends ActionBarActivity {
                                     Toast.makeText(MainActivity.this, "Wohoo, new picture!", Toast.LENGTH_SHORT).show();
                                 }
                             });
+                            camera.startPreview();
                         }
                     });
                 }
@@ -91,6 +93,7 @@ public class MainActivity extends ActionBarActivity {
         super.onStop();
         if (camera != null) {
             camera.release();
+            camera = null;
         }
     }
 }
