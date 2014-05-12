@@ -10,23 +10,21 @@ import android.support.v7.app.ActionBarActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 
 public class MainActivity extends ActionBarActivity {
 
+    private static final int MAX_IMAGES = 10;
+
     private Button captureButton;
 
-    private Button loadButton;
+    private Button createButton;
 
-    private Button createGifButton;
-
-    private LinearLayout thumbnailLayout;
+    private Button clearButton;
 
     private Camera camera;
 
@@ -39,13 +37,11 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        images = new ArrayList<Bitmap>();
+        images = new ArrayList<Bitmap>(MAX_IMAGES);
 
-        captureButton = (Button) findViewById(R.id.capture);
-        loadButton = (Button) findViewById(R.id.load);
-        createGifButton = (Button) findViewById(R.id.createButton);
-
-        thumbnailLayout = (LinearLayout) findViewById(R.id.thumbnailLayout);
+        captureButton = (Button) findViewById(R.id.capture_button);
+        createButton = (Button) findViewById(R.id.create_button);
+        clearButton = (Button) findViewById(R.id.clear_button);
 
         if (getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA)) {
             camera = getCameraInstance(this);
@@ -62,12 +58,14 @@ public class MainActivity extends ActionBarActivity {
                         @Override
                         public void onPictureTaken(byte[] bytes, Camera camera) {
                             Bitmap tmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                            images.add(tmp);
+                            Bitmap resized = Bitmap.createScaledBitmap(tmp, 200, 200, false);
+                            images.add(resized);
 
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
                                     Toast.makeText(MainActivity.this, "Wohoo, new picture!", Toast.LENGTH_SHORT).show();
+                                    refreshUi();
                                 }
                             });
                             camera.startPreview();
@@ -76,6 +74,33 @@ public class MainActivity extends ActionBarActivity {
                 }
             });
         }
+
+        createButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // create gif in background task
+
+                refreshUi();
+            }
+        });
+
+        clearButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (images != null) {
+                    images.clear();
+                }
+                refreshUi();
+            }
+        });
+
+        refreshUi();
+    }
+
+    private void refreshUi() {
+        captureButton.setEnabled(images.size() < MAX_IMAGES);
+        createButton.setEnabled(images.size() > 0);
+        clearButton.setEnabled(images.size() > 0);
     }
 
     private static Camera getCameraInstance(Context context) {

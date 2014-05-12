@@ -1,7 +1,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="#000000">
 
     <FrameLayout
         android:id="@+id/camera_preview"
@@ -10,29 +11,32 @@
         android:layout_weight="1" />
 
     <Button
+        android:id="@+id/capture_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Capture"
-        android:id="@+id/capture" />
-
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Load"
-        android:id="@+id/load"
-        android:layout_alignParentTop="true"
-        android:layout_toRightOf="@+id/capture" />
+        android:textColor="#FFFFFF" />
 
     <LinearLayout
-        android:id="@+id/thumbnailLayout"
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"></LinearLayout>
-
-    <Button
-        android:id="@+id/createButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Create GIF" />
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/clear_button"
+            android:layout_width="0dp"
+            android:layout_weight="0.2"
+            android:layout_height="wrap_content"
+            android:textColor="#FFFFFF"
+            android:text="Clear" />
+
+        <Button
+            android:id="@+id/create_button"
+            android:layout_width="0dp"
+            android:layout_weight="0.8"
+            android:layout_height="wrap_content"
+            android:textColor="#FFFFFF"
+            android:text="Create GIF" />
+    </LinearLayout>
 
 </LinearLayout>
