@@ -1,18 +1,23 @@
 package at.tripwire.gifmaker;
 
-import android.content.Intent;
+import android.content.Context;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.hardware.Camera;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.Toast;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class MainActivity extends ActionBarActivity {
-
-    private static final int CAMERA_REQUEST = 1234;
 
     private Button captureButton;
 
@@ -22,12 +27,18 @@ public class MainActivity extends ActionBarActivity {
 
     private LinearLayout thumbnailLayout;
 
-    private ImageView image;
+    private Camera camera;
+
+    private CameraPreview cameraPreview;
+
+    private List<Bitmap> images;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        images = new ArrayList<Bitmap>();
 
         captureButton = (Button) findViewById(R.id.capture);
         loadButton = (Button) findViewById(R.id.load);
@@ -35,22 +46,51 @@ public class MainActivity extends ActionBarActivity {
 
         thumbnailLayout = (LinearLayout) findViewById(R.id.thumbnailLayout);
 
-        image = (ImageView) findViewById(R.id.image);
+        if (getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA)) {
+            camera = getCameraInstance(this);
+            camera.setDisplayOrientation(90);
 
-        captureButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-                startActivityForResult(cameraIntent, CAMERA_REQUEST);
-            }
-        });
+            cameraPreview = new CameraPreview(this, camera);
+            FrameLayout preview = (FrameLayout) findViewById(R.id.camera_preview);
+            preview.addView(cameraPreview);
+
+            captureButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    camera.takePicture(null, null, new Camera.PictureCallback() {
+                        @Override
+                        public void onPictureTaken(byte[] bytes, Camera camera) {
+                            Bitmap tmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                            images.add(tmp);
+
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Toast.makeText(MainActivity.this, "Wohoo, new picture!", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                        }
+                    });
+                }
+            });
+        }
     }
 
+    private static Camera getCameraInstance(Context context) {
+        Camera c = null;
+        try {
+            c = Camera.open();
+        } catch (Exception e) {
+            Toast.makeText(context, "Camera is not available...", Toast.LENGTH_LONG).show();
+        }
+        return c;
+    }
 
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == CAMERA_REQUEST && resultCode == RESULT_OK) {
-            Bitmap photo = (Bitmap) data.getExtras().get("data");
-            image.setImageBitmap(photo);
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (camera != null) {
+            camera.release();
         }
     }
 }
