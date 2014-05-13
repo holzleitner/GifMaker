@@ -3,11 +3,15 @@ package at.tripwire.gifmaker;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.hardware.Camera;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
@@ -20,6 +24,7 @@ import java.util.List;
 public class MainActivity extends ActionBarActivity {
 
     private static final int MAX_IMAGES = 10;
+    private static final String TAG = "Load";
 
     private Button captureButton;
 
@@ -108,8 +113,6 @@ public class MainActivity extends ActionBarActivity {
             public void onClick(View view) {
                 Intent i = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                 startActivityForResult(i, LOAD_IMAGE_RESULTS);
-
-                refreshUi();
             }
 
         });
@@ -135,7 +138,22 @@ public class MainActivity extends ActionBarActivity {
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
 
+        if (requestCode == LOAD_IMAGE_RESULTS && resultCode == RESULT_OK && data != null) {
+            Uri pickedImage = data.getData();
+
+            String[] filePath = { MediaStore.Images.Media.DATA };
+            Cursor cursor = getContentResolver().query(pickedImage, filePath, null, null, null);
+            cursor.moveToFirst();
+            String imagePath = cursor.getString(cursor.getColumnIndex(filePath[0]));
+
+            images.add(BitmapFactory.decodeFile(imagePath));
+            cursor.close();
+
+            refreshUi();
+            Log.d(TAG, "images-Size: " + images.size());
+        }
     }
 
     @Override
