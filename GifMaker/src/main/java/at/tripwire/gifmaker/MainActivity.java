@@ -121,9 +121,7 @@ public class MainActivity extends ActionBarActivity {
                 Intent i = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                 startActivityForResult(i, LOAD_IMAGE_RESULTS);
             }
-
         });
-
         refreshUi();
     }
 
