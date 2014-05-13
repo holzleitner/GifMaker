@@ -3,25 +3,25 @@ package at.tripwire.gifmaker;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.hardware.Camera;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+
+import at.tripwire.gifmaker.encoder.AnimatedGifEncoder;
 
 
 public class MainActivity extends ActionBarActivity {
@@ -94,13 +94,18 @@ public class MainActivity extends ActionBarActivity {
         createButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // TODO create gif in background task
-
-                byte[] gifBytes = new byte[0];
+                ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                AnimatedGifEncoder encoder = new AnimatedGifEncoder();
+                encoder.start(bos);
+                for (Bitmap bitmap : images) {
+                    encoder.addFrame(bitmap);
+                }
+                encoder.finish();
+                byte[] gif = bos.toByteArray();
 
                 // start GifActivity
                 Intent intent = new Intent(MainActivity.this, GifActivity.class);
-                intent.putExtra("data", gifBytes);
+                intent.putExtra("data", gif);
                 startActivity(intent);
             }
         });
@@ -158,13 +163,13 @@ public class MainActivity extends ActionBarActivity {
 
                 refreshUi();
 
-            }catch (IOException e){
+            } catch (IOException e) {
                 e.printStackTrace();
             }
         }
     }
 
-    private Bitmap resizeImage(Bitmap img){
+    private Bitmap resizeImage(Bitmap img) {
         return Bitmap.createScaledBitmap(img, 200, 150, false);
     }
 

@@ -10,5 +10,8 @@ public class GifActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gif);
+
+        byte[] gif = getIntent().getByteArrayExtra("data");
+        // do something with this byte array
     }
 }
