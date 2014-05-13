@@ -132,6 +132,7 @@ public class MainActivity extends ActionBarActivity {
         createButton.setEnabled(images.size() > 0);
         clearButton.setEnabled(images.size() > 0);
         loadButton.setEnabled(images.size() < MAX_IMAGES);
+        progressBar.setProgress(images.size());
     }
 
     private static Camera getCameraInstance(Context context) {
