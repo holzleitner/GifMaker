@@ -163,8 +163,9 @@ public class MainActivity extends ActionBarActivity {
     }
 
     @Override
-    protected void onStop() {
-        super.onStop();
+    protected void onDestroy() {
+        super.onDestroy();
+
         if (camera != null) {
             camera.release();
             camera = null;
