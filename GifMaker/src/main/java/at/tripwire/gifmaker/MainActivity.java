@@ -1,6 +1,7 @@
 package at.tripwire.gifmaker;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -78,9 +79,14 @@ public class MainActivity extends ActionBarActivity {
         createButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // create gif in background task
+                // TODO create gif in background task
 
-                refreshUi();
+                byte[] gifBytes = new byte[0];
+
+                // start GifActivity
+                Intent intent = new Intent(MainActivity.this, GifActivity.class);
+                intent.putExtra("data", gifBytes);
+                startActivity(intent);
             }
         });
 
