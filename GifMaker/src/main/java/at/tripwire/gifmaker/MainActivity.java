@@ -17,6 +17,7 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -141,20 +142,30 @@ public class MainActivity extends ActionBarActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == LOAD_IMAGE_RESULTS && resultCode == RESULT_OK && data != null) {
-            Uri pickedImage = data.getData();
+            try {
+                Uri pickedImage = data.getData();
 
-            String[] filePath = { MediaStore.Images.Media.DATA };
-            Cursor cursor = getContentResolver().query(pickedImage, filePath, null, null, null);
-            cursor.moveToFirst();
-            String imagePath = cursor.getString(cursor.getColumnIndex(filePath[0]));
+                InputStream imageStream = getContentResolver().openInputStream(pickedImage);
+                Bitmap img = BitmapFactory.decodeStream(imageStream);
 
-            Bitmap img = resizeImage(BitmapFactory.decodeFile(imagePath));
+                Bitmap resized = resizeImage(img);
+                images.add(resized);
 
-            images.add(img);
-            cursor.close();
+                /*String[] filePath = {MediaStore.Images.Media.DATA};
+                Cursor cursor = getContentResolver().query(pickedImage, filePath, null, null, null);
+                cursor.moveToFirst();
+                String imagePath = cursor.getString(cursor.getColumnIndex(filePath[0]));
 
-            refreshUi();
-            Log.d(TAG, "images-Size: " + images.size());
+                Bitmap img = resizeImage(BitmapFactory.decodeFile(imagePath));
+
+                images.add(img);
+                cursor.close();*/
+
+                refreshUi();
+                Log.d(TAG, "images-Size: " + images.size());
+            }catch (Exception e){
+                e.printStackTrace();
+            }
         }
     }
 
