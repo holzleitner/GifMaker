@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import java.io.InputStream;
@@ -39,6 +40,8 @@ public class MainActivity extends ActionBarActivity {
 
     private List<Bitmap> images;
 
+    private ProgressBar progressBar;
+
     private static int LOAD_IMAGE_RESULTS = 1;
 
     @Override
@@ -52,6 +55,8 @@ public class MainActivity extends ActionBarActivity {
         createButton = (Button) findViewById(R.id.create_button);
         clearButton = (Button) findViewById(R.id.clear_button);
         loadButton = (Button) findViewById(R.id.load_button);
+        progressBar = (ProgressBar) findViewById(R.id.progress_bar);
+        progressBar.setMax(MAX_IMAGES);
 
         if (getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA)) {
             camera = getCameraInstance(this);
