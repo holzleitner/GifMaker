@@ -67,7 +67,7 @@ public class MainActivity extends ActionBarActivity {
                         @Override
                         public void onPictureTaken(byte[] bytes, Camera camera) {
                             Bitmap tmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                            Bitmap resized = Bitmap.createScaledBitmap(tmp, 200, 200, false);
+                            Bitmap resized = resizeImage(tmp);
                             images.add(resized);
 
                             runOnUiThread(new Runnable() {
@@ -148,12 +148,18 @@ public class MainActivity extends ActionBarActivity {
             cursor.moveToFirst();
             String imagePath = cursor.getString(cursor.getColumnIndex(filePath[0]));
 
-            images.add(BitmapFactory.decodeFile(imagePath));
+            Bitmap img = resizeImage(BitmapFactory.decodeFile(imagePath));
+
+            images.add(img);
             cursor.close();
 
             refreshUi();
             Log.d(TAG, "images-Size: " + images.size());
         }
+    }
+
+    private Bitmap resizeImage(Bitmap img){
+        return Bitmap.createScaledBitmap(img, 200, 200, false);
     }
 
     @Override
