@@ -1,6 +1,7 @@
 package at.tripwire.gifmaker;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -26,11 +27,15 @@ public class MainActivity extends ActionBarActivity {
 
     private Button clearButton;
 
+    private Button loadButton;
+
     private Camera camera;
 
     private CameraPreview cameraPreview;
 
     private List<Bitmap> images;
+
+    private static int LOAD_IMAGE_RESULTS = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +47,7 @@ public class MainActivity extends ActionBarActivity {
         captureButton = (Button) findViewById(R.id.capture_button);
         createButton = (Button) findViewById(R.id.create_button);
         clearButton = (Button) findViewById(R.id.clear_button);
+        loadButton = (Button) findViewById(R.id.load_button);
 
         if (getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA)) {
             camera = getCameraInstance(this);
@@ -94,6 +100,17 @@ public class MainActivity extends ActionBarActivity {
             }
         });
 
+        loadButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                startActivityForResult(i, LOAD_IMAGE_RESULTS);
+
+                refreshUi();
+            }
+
+        });
+
         refreshUi();
     }
 
@@ -101,6 +118,7 @@ public class MainActivity extends ActionBarActivity {
         captureButton.setEnabled(images.size() < MAX_IMAGES);
         createButton.setEnabled(images.size() > 0);
         clearButton.setEnabled(images.size() > 0);
+        loadButton.setEnabled(images.size() < MAX_IMAGES);
     }
 
     private static Camera getCameraInstance(Context context) {
@@ -111,6 +129,10 @@ public class MainActivity extends ActionBarActivity {
             Toast.makeText(context, "Camera is not available...", Toast.LENGTH_LONG).show();
         }
         return c;
+    }
+
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
     }
 
     @Override
