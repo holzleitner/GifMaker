@@ -17,6 +17,7 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +26,7 @@ import java.util.List;
 public class MainActivity extends ActionBarActivity {
 
     private static final int MAX_IMAGES = 10;
-    private static final String TAG = "Load";
+    private static final String TAG = "MainActivity";
 
     private Button captureButton;
 
@@ -162,15 +163,15 @@ public class MainActivity extends ActionBarActivity {
                 cursor.close();*/
 
                 refreshUi();
-                Log.d(TAG, "images-Size: " + images.size());
-            }catch (Exception e){
+
+            }catch (IOException e){
                 e.printStackTrace();
             }
         }
     }
 
     private Bitmap resizeImage(Bitmap img){
-        return Bitmap.createScaledBitmap(img, 200, 200, false);
+        return Bitmap.createScaledBitmap(img, 200, 150, false);
     }
 
     @Override
