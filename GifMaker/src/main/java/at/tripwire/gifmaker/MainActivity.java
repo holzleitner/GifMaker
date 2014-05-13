@@ -152,16 +152,6 @@ public class MainActivity extends ActionBarActivity {
                 Bitmap resized = resizeImage(img);
                 images.add(resized);
 
-                /*String[] filePath = {MediaStore.Images.Media.DATA};
-                Cursor cursor = getContentResolver().query(pickedImage, filePath, null, null, null);
-                cursor.moveToFirst();
-                String imagePath = cursor.getString(cursor.getColumnIndex(filePath[0]));
-
-                Bitmap img = resizeImage(BitmapFactory.decodeFile(imagePath));
-
-                images.add(img);
-                cursor.close();*/
-
                 refreshUi();
 
             }catch (IOException e){
