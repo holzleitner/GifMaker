@@ -3,25 +3,26 @@ package at.tripwire.gifmaker;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.hardware.Camera;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+
+import at.tripwire.gifmaker.encoder.AnimatedGifEncoder;
 
 
 public class MainActivity extends ActionBarActivity {
@@ -43,6 +44,8 @@ public class MainActivity extends ActionBarActivity {
 
     private ProgressBar progressBar;
 
+    private TextView progressbarText;
+
     private static int LOAD_IMAGE_RESULTS = 1;
 
     @Override
@@ -58,6 +61,7 @@ public class MainActivity extends ActionBarActivity {
         loadButton = (Button) findViewById(R.id.load_button);
         progressBar = (ProgressBar) findViewById(R.id.progress_bar);
         progressBar.setMax(MAX_IMAGES);
+        progressbarText = (TextView) findViewById(R.id.progressbar_text);
 
         if (getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA)) {
             camera = getCameraInstance(this);
@@ -70,6 +74,7 @@ public class MainActivity extends ActionBarActivity {
             captureButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+
                     camera.takePicture(null, null, new Camera.PictureCallback() {
                         @Override
                         public void onPictureTaken(byte[] bytes, Camera camera) {
@@ -94,13 +99,18 @@ public class MainActivity extends ActionBarActivity {
         createButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // TODO create gif in background task
-
-                byte[] gifBytes = new byte[0];
+                ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                AnimatedGifEncoder encoder = new AnimatedGifEncoder();
+                encoder.start(bos);
+                for (Bitmap bitmap : images) {
+                    encoder.addFrame(bitmap);
+                }
+                encoder.finish();
+                byte[] gif = bos.toByteArray();
 
                 // start GifActivity
                 Intent intent = new Intent(MainActivity.this, GifActivity.class);
-                intent.putExtra("data", gifBytes);
+                intent.putExtra("data", gif);
                 startActivity(intent);
             }
         });
@@ -121,9 +131,7 @@ public class MainActivity extends ActionBarActivity {
                 Intent i = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                 startActivityForResult(i, LOAD_IMAGE_RESULTS);
             }
-
         });
-
         refreshUi();
     }
 
@@ -133,6 +141,7 @@ public class MainActivity extends ActionBarActivity {
         clearButton.setEnabled(images.size() > 0);
         loadButton.setEnabled(images.size() < MAX_IMAGES);
         progressBar.setProgress(images.size());
+        progressbarText.setText(images.size() + "/" + MAX_IMAGES);
     }
 
     private static Camera getCameraInstance(Context context) {
@@ -160,13 +169,13 @@ public class MainActivity extends ActionBarActivity {
 
                 refreshUi();
 
-            }catch (IOException e){
+            } catch (IOException e) {
                 e.printStackTrace();
             }
         }
     }
 
-    private Bitmap resizeImage(Bitmap img){
+    private Bitmap resizeImage(Bitmap img) {
         return Bitmap.createScaledBitmap(img, 200, 150, false);
     }
 
