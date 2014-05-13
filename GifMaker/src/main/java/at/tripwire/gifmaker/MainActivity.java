@@ -31,8 +31,6 @@ public class MainActivity extends ActionBarActivity {
 
     private Camera camera;
 
-    private CameraPreview cameraPreview;
-
     private List<Bitmap> images;
 
     private static int LOAD_IMAGE_RESULTS = 1;
@@ -53,7 +51,7 @@ public class MainActivity extends ActionBarActivity {
             camera = getCameraInstance(this);
             camera.setDisplayOrientation(90);
 
-            cameraPreview = new CameraPreview(this, camera);
+            CameraPreview cameraPreview = new CameraPreview(this, camera);
             FrameLayout preview = (FrameLayout) findViewById(R.id.camera_preview);
             preview.addView(cameraPreview);
 
