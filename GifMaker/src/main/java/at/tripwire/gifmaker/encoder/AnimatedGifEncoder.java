@@ -8,6 +8,10 @@ import android.graphics.Paint;
 import java.io.IOException;
 import java.io.OutputStream;
 
+/**
+ * Copyright: Nick Badal
+ * https://github.com/nbadal/android-gif-encoder
+ */
 public class AnimatedGifEncoder {
 
     protected int width; // image size

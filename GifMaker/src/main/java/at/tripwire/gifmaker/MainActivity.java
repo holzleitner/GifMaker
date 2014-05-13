@@ -74,6 +74,7 @@ public class MainActivity extends ActionBarActivity {
             captureButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+
                     camera.takePicture(null, null, new Camera.PictureCallback() {
                         @Override
                         public void onPictureTaken(byte[] bytes, Camera camera) {
@@ -140,7 +141,7 @@ public class MainActivity extends ActionBarActivity {
         clearButton.setEnabled(images.size() > 0);
         loadButton.setEnabled(images.size() < MAX_IMAGES);
         progressBar.setProgress(images.size());
-        progressbarText.setText(images.size()+ "/"+ MAX_IMAGES);
+        progressbarText.setText(images.size() + "/" + MAX_IMAGES);
     }
 
     private static Camera getCameraInstance(Context context) {

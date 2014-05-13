@@ -3,6 +3,8 @@ package at.tripwire.gifmaker;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 
+import java.io.FileOutputStream;
+
 
 public class GifActivity extends ActionBarActivity {
 
@@ -13,5 +15,18 @@ public class GifActivity extends ActionBarActivity {
 
         byte[] gif = getIntent().getByteArrayExtra("data");
         // do something with this byte array
+
+        writeFile(gif);
+    }
+
+    private void writeFile(byte[] gif) {
+        FileOutputStream outStream = null;
+        try {
+            outStream = new FileOutputStream("/sdcard/test.gif");
+            outStream.write(gif);
+            outStream.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
