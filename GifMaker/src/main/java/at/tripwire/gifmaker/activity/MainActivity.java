@@ -50,8 +50,6 @@ public class MainActivity extends ActionBarActivity {
 
     private TextView progressbarText;
 
-    private Button saveButton;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,8 +65,6 @@ public class MainActivity extends ActionBarActivity {
         progressBar = (ProgressBar) findViewById(R.id.progress_bar);
         progressBar.setMax(MAX_IMAGES);
         progressbarText = (TextView) findViewById(R.id.progressbar_text);
-        saveButton = (Button) findViewById(R.id.save_button);
-
 
         if (getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA)) {
             camera = getCameraInstance(this);
@@ -127,12 +123,6 @@ public class MainActivity extends ActionBarActivity {
             }
         });
 
-        saveButton.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View view) {
-                
-            }
-        });
         refreshUi();
     }
 
