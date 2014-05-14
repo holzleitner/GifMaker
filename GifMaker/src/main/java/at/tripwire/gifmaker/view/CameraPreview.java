@@ -1,4 +1,4 @@
-package at.tripwire.gifmaker;
+package at.tripwire.gifmaker.view;
 
 import android.content.Context;
 import android.hardware.Camera;

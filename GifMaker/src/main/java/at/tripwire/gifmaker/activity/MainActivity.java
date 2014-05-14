@@ -1,4 +1,4 @@
-package at.tripwire.gifmaker;
+package at.tripwire.gifmaker.activity;
 
 import android.content.Context;
 import android.content.Intent;
@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.hardware.Camera;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.View;
@@ -22,13 +23,16 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import at.tripwire.gifmaker.R;
+import at.tripwire.gifmaker.Utils;
 import at.tripwire.gifmaker.encoder.AnimatedGifEncoder;
-
+import at.tripwire.gifmaker.view.CameraPreview;
 
 public class MainActivity extends ActionBarActivity {
 
     private static final int MAX_IMAGES = 10;
-    private static final String TAG = "MainActivity";
+
+    private static final int LOAD_IMAGE_RESULTS = 1;
 
     private Button captureButton;
 
@@ -45,8 +49,6 @@ public class MainActivity extends ActionBarActivity {
     private ProgressBar progressBar;
 
     private TextView progressbarText;
-
-    private static int LOAD_IMAGE_RESULTS = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,8 +81,7 @@ public class MainActivity extends ActionBarActivity {
                         @Override
                         public void onPictureTaken(byte[] bytes, Camera camera) {
                             Bitmap tmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                            Bitmap resized = resizeImage(tmp);
-                            images.add(resized);
+                            images.add(Utils.resizeImage(tmp));
 
                             runOnUiThread(new Runnable() {
                                 @Override
@@ -99,19 +100,7 @@ public class MainActivity extends ActionBarActivity {
         createButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ByteArrayOutputStream bos = new ByteArrayOutputStream();
-                AnimatedGifEncoder encoder = new AnimatedGifEncoder();
-                encoder.start(bos);
-                for (Bitmap bitmap : images) {
-                    encoder.addFrame(bitmap);
-                }
-                encoder.finish();
-                byte[] gif = bos.toByteArray();
-
-                // start GifActivity
-                Intent intent = new Intent(MainActivity.this, GifActivity.class);
-                intent.putExtra("data", gif);
-                startActivity(intent);
+                gifTask.execute(images);
             }
         });
 
@@ -160,12 +149,10 @@ public class MainActivity extends ActionBarActivity {
         if (requestCode == LOAD_IMAGE_RESULTS && resultCode == RESULT_OK && data != null) {
             try {
                 Uri pickedImage = data.getData();
-
                 InputStream imageStream = getContentResolver().openInputStream(pickedImage);
                 Bitmap img = BitmapFactory.decodeStream(imageStream);
 
-                Bitmap resized = resizeImage(img);
-                images.add(resized);
+                images.add(Utils.resizeImage(img));
 
                 refreshUi();
 
@@ -173,10 +160,6 @@ public class MainActivity extends ActionBarActivity {
                 e.printStackTrace();
             }
         }
-    }
-
-    private Bitmap resizeImage(Bitmap img) {
-        return Bitmap.createScaledBitmap(img, 200, 150, false);
     }
 
     @Override
@@ -188,4 +171,43 @@ public class MainActivity extends ActionBarActivity {
             camera = null;
         }
     }
+
+    private AsyncTask<List<Bitmap>, Integer, byte[]> gifTask = new AsyncTask<List<Bitmap>, Integer, byte[]>() {
+        @Override
+        protected byte[] doInBackground(List<Bitmap>... lists) {
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            AnimatedGifEncoder encoder = new AnimatedGifEncoder();
+            encoder.start(bos);
+            for (Bitmap bitmap : images) {
+                encoder.addFrame(bitmap);
+                encoder.setDelay(10);
+            }
+            encoder.finish();
+            images.clear();
+            return bos.toByteArray();
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            // TODO show dialog
+        }
+
+        @Override
+        protected void onProgressUpdate(Integer... values) {
+            super.onProgressUpdate(values);
+            // TODO show progress in dialog
+        }
+
+        @Override
+        protected void onPostExecute(byte[] gif) {
+            super.onPostExecute(gif);
+            // TODO hide dialog
+
+            // start GifActivity
+            Intent intent = new Intent(MainActivity.this, GifActivity.class);
+            intent.putExtra("data", gif);
+            startActivity(intent);
+        }
+    };
 }
