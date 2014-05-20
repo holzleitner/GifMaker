@@ -2,6 +2,7 @@ package at.tripwire.gifmaker.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -9,6 +10,7 @@ import android.hardware.Camera;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -85,7 +87,7 @@ public class MainActivity extends ActionBarActivity {
                         @Override
                         public void onPictureTaken(byte[] bytes, Camera camera) {
                             Bitmap tmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                            images.add(Utils.resizeImage(tmp));
+                            images.add(Utils.resizeImage(tmp, MainActivity.this));
 
                             runOnUiThread(new Runnable() {
                                 @Override
@@ -218,7 +220,7 @@ public class MainActivity extends ActionBarActivity {
                 InputStream imageStream = getContentResolver().openInputStream(pickedImage);
                 Bitmap img = BitmapFactory.decodeStream(imageStream);
 
-                images.add(Utils.resizeImage(img));
+                images.add(Utils.resizeImage(img, this));
 
                 refreshUi();
 
