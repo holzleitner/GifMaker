@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 
+import java.io.File;
 import java.io.FileOutputStream;
 
 import at.tripwire.gifmaker.R;
@@ -63,8 +64,13 @@ public class GifActivity extends ActionBarActivity {
     private void writeFile(byte[] gif, String filename) {
         FileOutputStream outStream = null;
         try {
-            outStream = new FileOutputStream(Environment.DIRECTORY_PICTURES + "/Gifmaker/" + filename);
+            File pictureFolder = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
+            File file = new File(pictureFolder, filename);
+            file.mkdirs();
+
+            outStream = new FileOutputStream(file);
             outStream.write(gif);
+            outStream.flush();
             outStream.close();
         } catch (Exception e) {
             Log.e("GifActivity", e.getMessage());
