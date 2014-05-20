@@ -4,10 +4,11 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
+import android.preference.PreferenceManager;
 
 public final class Utils {
 
-    public static Bitmap resizeImage(Bitmap img) {
+    public static Bitmap resizeImage(Bitmap img, Context context) {
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
         String resolution = sharedPref.getString("pref_resolution", "");
         String[] res = resolution.split("x");
