@@ -1,5 +1,6 @@
 package at.tripwire.gifmaker.activity;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -53,6 +54,7 @@ public class MainActivity extends ActionBarActivity {
 
     private TextView progressbarText;
 
+    private ProgressDialog progress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,7 +82,7 @@ public class MainActivity extends ActionBarActivity {
             captureButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-
+                    captureButton.setEnabled(false);
                     camera.takePicture(null, null, new Camera.PictureCallback() {
                         @Override
                         public void onPictureTaken(byte[] bytes, Camera camera) {
@@ -122,19 +124,13 @@ public class MainActivity extends ActionBarActivity {
                     @Override
                     protected void onPreExecute() {
                         super.onPreExecute();
-                        // TODO show dialog
-                    }
-
-                    @Override
-                    protected void onProgressUpdate(Integer... values) {
-                        super.onProgressUpdate(values);
-                        // TODO show progress in dialog
+                        progress.show();
                     }
 
                     @Override
                     protected void onPostExecute(byte[] gif) {
                         super.onPostExecute(gif);
-                        // TODO hide dialog
+                        progress.dismiss();
 
                         // start GifActivity
                         Intent intent = new Intent(MainActivity.this, GifActivity.class);
@@ -163,6 +159,8 @@ public class MainActivity extends ActionBarActivity {
                 startActivityForResult(i, LOAD_IMAGE_RESULTS);
             }
         });
+
+        progress = ProgressDialog.show(this, "Creating GIF", null, true);
 
         refreshUi();
     }
