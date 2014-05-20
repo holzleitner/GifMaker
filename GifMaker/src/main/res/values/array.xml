@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <array name="pref_resolutions">
+        <item>150x112</item>
+        <item>200x150</item>
+        <item>300x225</item>
+    </array>
+</resources>

@@ -5,10 +5,13 @@
     android:orientation="vertical"
     android:background="#000000">
 
-    <CheckBoxPreference
-        android:key="pref_test"
+    <ListPreference
+        android:key="pref_resolution"
         android:title="Resolution"
         android:summary="Change Resolution for Gifs"
-        android:defaultValue="true" />
+        android:dialogTitle="Choose Resolution"
+        android:entries="@array/pref_resolutions"
+        android:entryValues="@array/pref_resolutions"
+        android:defaultValue="200x150" />
 
 </PreferenceScreen>
