@@ -162,7 +162,9 @@ public class MainActivity extends ActionBarActivity {
             }
         });
 
-        progress = ProgressDialog.show(this, "Creating GIF", null, true);
+        progress = new ProgressDialog(this);
+        progress.setTitle("Creating GIF");
+        progress.setMessage("Working...");
 
         refreshUi();
     }
