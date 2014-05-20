@@ -64,7 +64,7 @@ public class GifActivity extends ActionBarActivity {
                 finish();
             }
         });
-        builder.show();
+        dialog = builder.create();
     }
 
     private void writeFile(byte[] gif, String filename) {
