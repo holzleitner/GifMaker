@@ -13,6 +13,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -36,9 +37,11 @@ import at.tripwire.gifmaker.view.CameraPreview;
 
 public class MainActivity extends ActionBarActivity {
 
-    private static final int MAX_IMAGES = 10;
+    private int MAX_IMAGES = 10;
 
     private static final int LOAD_IMAGE_RESULTS = 1;
+
+    private static final int START_SETTINGS_ACTIVITY = 2;
 
     private Button captureButton;
 
@@ -62,6 +65,9 @@ public class MainActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+        MAX_IMAGES = Integer.parseInt(sharedPref.getString("pref_maxImgNumber", "10"));
 
         images = new ArrayList<Bitmap>(MAX_IMAGES);
 
@@ -111,10 +117,13 @@ public class MainActivity extends ActionBarActivity {
                 AsyncTask<List<Bitmap>, Integer, byte[]> gifTask = new AsyncTask<List<Bitmap>, Integer, byte[]>() {
                     @Override
                     protected byte[] doInBackground(List<Bitmap>... lists) {
+                        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
+                        int delay = Integer.parseInt(sharedPref.getString("pref_delay", "400"));
+
                         ByteArrayOutputStream bos = new ByteArrayOutputStream();
                         AnimatedGifEncoder encoder = new AnimatedGifEncoder();
                         encoder.start(bos);
-                        encoder.setDelay(1000);
+                        encoder.setDelay(delay);
                         for (Bitmap bitmap : images) {
                             encoder.addFrame(bitmap);
                         }
@@ -183,7 +192,8 @@ public class MainActivity extends ActionBarActivity {
             case R.id.action_settings:
                 // start SettingsActivity
                 Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
-                startActivity(intent);
+                //startActivity(intent);
+                startActivityForResult(intent, START_SETTINGS_ACTIVITY);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -191,6 +201,9 @@ public class MainActivity extends ActionBarActivity {
     }
 
     private void refreshUi() {
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+        MAX_IMAGES = Integer.parseInt(sharedPref.getString("pref_maxImgNumber", "10"));
+
         captureButton.setEnabled(images.size() < MAX_IMAGES);
         createButton.setEnabled(images.size() > 0);
         clearButton.setEnabled(images.size() > 0);
@@ -225,6 +238,9 @@ public class MainActivity extends ActionBarActivity {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        }
+        else if(requestCode == START_SETTINGS_ACTIVITY && resultCode == RESULT_OK){
+            refreshUi();
         }
     }
 

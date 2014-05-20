@@ -4,5 +4,40 @@
         <item>150x112</item>
         <item>200x150</item>
         <item>300x225</item>
+        <item>400x300</item>
+        <item>500x375</item>
+        <item>300x400</item>
+        <item>375x500</item>
     </array>
+
+    <string-array name="pref_maxImgNumber">
+        <item>10</item>
+        <item>20</item>
+        <item>30</item>
+    </string-array>
+
+    <array name="pref_delayEntries">
+        <item>100ms</item>
+        <item>200ms</item>
+        <item>300ms</item>
+        <item>400ms</item>
+        <item>500ms</item>
+        <item>600ms</item>
+        <item>700ms</item>
+        <item>800ms</item>
+        <item>900ms</item>
+        <item>1s</item>
+    </array>
+    <string-array name="pref_delayValues">
+        <item>100</item>
+        <item>200</item>
+        <item>300</item>
+        <item>400</item>
+        <item>500</item>
+        <item>600</item>
+        <item>700</item>
+        <item>800</item>
+        <item>900</item>
+        <item>1000</item>
+    </string-array>
 </resources>

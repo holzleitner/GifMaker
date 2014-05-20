@@ -7,10 +7,23 @@
 
     <ListPreference
         android:key="pref_resolution"
-        android:title="Resolution"
+        android:title="Resolution of Gif"
         android:dialogTitle="Choose Resolution"
         android:entries="@array/pref_resolutions"
         android:entryValues="@array/pref_resolutions"
-        android:defaultValue="200x150" />
-
+        android:defaultValue="400x300" />
+    <ListPreference
+        android:key="pref_maxImgNumber"
+        android:title="Max Number of Images per Gif"
+        android:dialogTitle="Choose Number"
+        android:entries="@array/pref_maxImgNumber"
+        android:entryValues="@array/pref_maxImgNumber"
+        android:defaultValue="10"/>
+    <ListPreference
+        android:key="pref_delay"
+        android:title="Delay between Images"
+        android:dialogTitle="Choose Delay"
+        android:entries="@array/pref_delayEntries"
+        android:entryValues="@array/pref_delayValues"
+        android:defaultValue="400" />
 </PreferenceScreen>

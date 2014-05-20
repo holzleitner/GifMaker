@@ -10,7 +10,7 @@ public final class Utils {
 
     public static Bitmap resizeImage(Bitmap img, Context context) {
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
-        String resolution = sharedPref.getString("pref_resolution", "200x150");
+        String resolution = sharedPref.getString("pref_resolution", "400x300");
         String[] res = resolution.split("x");
 
         Bitmap tmp = Bitmap.createScaledBitmap(img, Integer.parseInt(res[0]), Integer.parseInt(res[1]), false);
