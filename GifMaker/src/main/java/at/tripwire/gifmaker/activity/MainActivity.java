@@ -201,9 +201,6 @@ public class MainActivity extends ActionBarActivity {
     }
 
     private void refreshUi() {
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-        MAX_IMAGES = Integer.parseInt(sharedPref.getString("pref_maxImgNumber", "10"));
-
         captureButton.setEnabled(images.size() < MAX_IMAGES);
         createButton.setEnabled(images.size() > 0);
         clearButton.setEnabled(images.size() > 0);
@@ -240,6 +237,8 @@ public class MainActivity extends ActionBarActivity {
             }
         }
         else if(requestCode == START_SETTINGS_ACTIVITY && resultCode == RESULT_OK){
+            SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+            MAX_IMAGES = Integer.parseInt(sharedPref.getString("pref_maxImgNumber", "10"));
             refreshUi();
         }
     }
