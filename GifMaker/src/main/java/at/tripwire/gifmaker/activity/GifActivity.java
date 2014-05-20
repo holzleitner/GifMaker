@@ -1,5 +1,6 @@
 package at.tripwire.gifmaker.activity;
 
+import android.graphics.Movie;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.graphics.Movie;
@@ -12,6 +13,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -22,7 +25,7 @@ import at.tripwire.gifmaker.view.GifMovieView;
 public class GifActivity extends ActionBarActivity {
 
     private Button saveButton;
-
+    
     private AlertDialog dialog;
 
     @Override
@@ -51,6 +54,8 @@ public class GifActivity extends ActionBarActivity {
             public void onClick(DialogInterface dialogInterface, int i) {
                 String filename = input.getText().toString();
                 writeFile(gif, filename);
+                Toast.makeText(GifActivity.this, "File saved", Toast.LENGTH_SHORT);
+                
             }
         });
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
