@@ -23,7 +23,7 @@ public class GifActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         //setContentView(R.layout.activity_gif);
 
-        byte[] gif = getIntent().getByteArrayExtra("data");
+        final byte[] gif = getIntent().getByteArrayExtra("data");
         setContentView(new GifView(this, gif));
 
         //writeFile(gif);
@@ -42,13 +42,13 @@ public class GifActivity extends ActionBarActivity {
         builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-
+                writeFile(gif);
             }
         });
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-
+                finish();
             }
         });
         dialog = builder.create();
@@ -57,7 +57,7 @@ public class GifActivity extends ActionBarActivity {
     private void writeFile(byte[] gif) {
         FileOutputStream outStream = null;
         try {
-            outStream = new FileOutputStream("/sdcard/test2.gif");
+            outStream = new FileOutputStream("/sdcard/test.gif");
             outStream.write(gif);
             outStream.close();
         } catch (Exception e) {
