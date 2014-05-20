@@ -104,6 +104,46 @@ public class MainActivity extends ActionBarActivity {
         createButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                AsyncTask<List<Bitmap>, Integer, byte[]> gifTask = new AsyncTask<List<Bitmap>, Integer, byte[]>() {
+                    @Override
+                    protected byte[] doInBackground(List<Bitmap>... lists) {
+                        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                        AnimatedGifEncoder encoder = new AnimatedGifEncoder();
+                        encoder.start(bos);
+                        encoder.setFrameRate(10f);
+                        encoder.setDelay(10);
+                        for (Bitmap bitmap : images) {
+                            encoder.addFrame(bitmap);
+                            encoder.setDelay(10);
+                        }
+                        encoder.finish();
+                        images.clear();
+                        return bos.toByteArray();
+                    }
+
+                    @Override
+                    protected void onPreExecute() {
+                        super.onPreExecute();
+                        // TODO show dialog
+                    }
+
+                    @Override
+                    protected void onProgressUpdate(Integer... values) {
+                        super.onProgressUpdate(values);
+                        // TODO show progress in dialog
+                    }
+
+                    @Override
+                    protected void onPostExecute(byte[] gif) {
+                        super.onPostExecute(gif);
+                        // TODO hide dialog
+
+                        // start GifActivity
+                        Intent intent = new Intent(MainActivity.this, GifActivity.class);
+                        intent.putExtra("data", gif);
+                        startActivity(intent);
+                    }
+                };
                 gifTask.execute(images);
             }
         });
@@ -197,45 +237,4 @@ public class MainActivity extends ActionBarActivity {
             camera = null;
         }
     }
-
-    private AsyncTask<List<Bitmap>, Integer, byte[]> gifTask = new AsyncTask<List<Bitmap>, Integer, byte[]>() {
-        @Override
-        protected byte[] doInBackground(List<Bitmap>... lists) {
-            ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            AnimatedGifEncoder encoder = new AnimatedGifEncoder();
-            encoder.start(bos);
-            encoder.setFrameRate(10f);
-            encoder.setDelay(10);
-            for (Bitmap bitmap : images) {
-                encoder.addFrame(bitmap);
-                encoder.setDelay(10);
-            }
-            encoder.finish();
-            images.clear();
-            return bos.toByteArray();
-        }
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            // TODO show dialog
-        }
-
-        @Override
-        protected void onProgressUpdate(Integer... values) {
-            super.onProgressUpdate(values);
-            // TODO show progress in dialog
-        }
-
-        @Override
-        protected void onPostExecute(byte[] gif) {
-            super.onPostExecute(gif);
-            // TODO hide dialog
-
-            // start GifActivity
-            Intent intent = new Intent(MainActivity.this, GifActivity.class);
-            intent.putExtra("data", gif);
-            startActivity(intent);
-        }
-    };
 }

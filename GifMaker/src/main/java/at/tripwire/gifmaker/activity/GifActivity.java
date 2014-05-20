@@ -17,9 +17,8 @@ import at.tripwire.gifmaker.view.GifMovieView;
 
 public class GifActivity extends ActionBarActivity {
 
-    private RelativeLayout gifLayout;
-
     private Button saveButton;
+    
     private AlertDialog dialog;
 
     @Override
@@ -29,12 +28,10 @@ public class GifActivity extends ActionBarActivity {
 
         final byte[] gif = getIntent().getByteArrayExtra("data");
 
-        GifMovieView view = new GifMovieView(this);
+        GifMovieView view = (GifMovieView) findViewById(R.id.gifView);
         view.setMovie(Movie.decodeByteArray(gif, 0, gif.length));
 
-        gifLayout = (RelativeLayout) findViewById(R.id.gifLayout);
-        gifLayout.addView(view);
-
+        saveButton = (Button) findViewById(R.id.save_button);
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
