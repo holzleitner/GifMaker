@@ -4,10 +4,12 @@ import android.graphics.Movie;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.RelativeLayout;
 
 import java.io.FileOutputStream;
@@ -17,9 +19,8 @@ import at.tripwire.gifmaker.view.GifMovieView;
 
 public class GifActivity extends ActionBarActivity {
 
-    private RelativeLayout gifLayout;
-
     private Button saveButton;
+    
     private AlertDialog dialog;
 
     @Override
@@ -29,25 +30,25 @@ public class GifActivity extends ActionBarActivity {
 
         final byte[] gif = getIntent().getByteArrayExtra("data");
 
-        GifMovieView view = new GifMovieView(this);
+        GifMovieView view = (GifMovieView) findViewById(R.id.gifView);
         view.setMovie(Movie.decodeByteArray(gif, 0, gif.length));
 
-        gifLayout = (RelativeLayout) findViewById(R.id.gifLayout);
-        gifLayout.addView(view);
-
+        saveButton = (Button) findViewById(R.id.save_button);
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 dialog.show();
             }
-
         });
-        AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Save as:");
+        final EditText input = new EditText(this);
+        builder.setView(input);
         builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                writeFile(gif);
+                String filename = input.getText().toString();
+                writeFile(gif, filename);
             }
         });
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -56,13 +57,13 @@ public class GifActivity extends ActionBarActivity {
                 finish();
             }
         });
-        dialog = builder.create();
+        builder.show();
     }
 
-    private void writeFile(byte[] gif) {
+    private void writeFile(byte[] gif, String filename) {
         FileOutputStream outStream = null;
         try {
-            outStream = new FileOutputStream("/sdcard/test.gif");
+            outStream = new FileOutputStream(Environment.DIRECTORY_PICTURES + "/Gifmaker/" + filename);
             outStream.write(gif);
             outStream.close();
         } catch (Exception e) {
