@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -50,6 +51,8 @@ public class GifActivity extends ActionBarActivity {
             public void onClick(DialogInterface dialogInterface, int i) {
                 String filename = input.getText().toString();
                 writeFile(gif, filename);
+                Toast.makeText(GifActivity.this, "File saved", Toast.LENGTH_SHORT);
+                
             }
         });
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
