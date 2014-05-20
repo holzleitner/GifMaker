@@ -40,7 +40,7 @@ public class GifActivity extends ActionBarActivity {
                 dialog.show();
             }
         });
-        AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Save as:");
         final EditText input = new EditText(this);
         builder.setView(input);
