@@ -3,6 +3,9 @@ package at.tripwire.gifmaker.activity;
 import android.graphics.Movie;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.graphics.Movie;
+import android.media.MediaScannerConnection;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v7.app.ActionBarActivity;
@@ -11,7 +14,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
+import java.io.File;
 import java.io.FileOutputStream;
 
 import at.tripwire.gifmaker.R;
@@ -49,6 +54,8 @@ public class GifActivity extends ActionBarActivity {
             public void onClick(DialogInterface dialogInterface, int i) {
                 String filename = input.getText().toString();
                 writeFile(gif, filename);
+                Toast.makeText(GifActivity.this, "File saved", Toast.LENGTH_SHORT);
+                
             }
         });
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -63,9 +70,24 @@ public class GifActivity extends ActionBarActivity {
     private void writeFile(byte[] gif, String filename) {
         FileOutputStream outStream = null;
         try {
-            outStream = new FileOutputStream(Environment.DIRECTORY_PICTURES + "/Gifmaker/" + filename);
+            File pictureFolder = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
+            File file = new File(pictureFolder, filename);
+            pictureFolder.mkdirs();
+
+            outStream = new FileOutputStream(file);
             outStream.write(gif);
+            outStream.flush();
             outStream.close();
+
+            MediaScannerConnection.scanFile(this,
+                    new String[]{file.toString()}, null,
+                    new MediaScannerConnection.OnScanCompletedListener() {
+                        public void onScanCompleted(String path, Uri uri) {
+                            Log.i("ExternalStorage", "Scanned " + path + ":");
+                            Log.i("ExternalStorage", "-> uri=" + uri);
+                        }
+                    }
+            );
         } catch (Exception e) {
             Log.e("GifActivity", e.getMessage());
         }

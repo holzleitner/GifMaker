@@ -112,11 +112,9 @@ public class MainActivity extends ActionBarActivity {
                         ByteArrayOutputStream bos = new ByteArrayOutputStream();
                         AnimatedGifEncoder encoder = new AnimatedGifEncoder();
                         encoder.start(bos);
-                        encoder.setFrameRate(10f);
-                        encoder.setDelay(10);
+                        encoder.setDelay(1000);
                         for (Bitmap bitmap : images) {
                             encoder.addFrame(bitmap);
-                            encoder.setDelay(10);
                         }
                         encoder.finish();
                         images.clear();
