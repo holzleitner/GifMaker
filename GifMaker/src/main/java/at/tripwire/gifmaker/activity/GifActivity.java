@@ -3,6 +3,9 @@ package at.tripwire.gifmaker.activity;
 import android.graphics.Movie;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.graphics.Movie;
+import android.media.MediaScannerConnection;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v7.app.ActionBarActivity;
@@ -69,12 +72,22 @@ public class GifActivity extends ActionBarActivity {
         try {
             File pictureFolder = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
             File file = new File(pictureFolder, filename);
-            file.mkdirs();
+            pictureFolder.mkdirs();
 
             outStream = new FileOutputStream(file);
             outStream.write(gif);
             outStream.flush();
             outStream.close();
+
+            MediaScannerConnection.scanFile(this,
+                    new String[]{file.toString()}, null,
+                    new MediaScannerConnection.OnScanCompletedListener() {
+                        public void onScanCompleted(String path, Uri uri) {
+                            Log.i("ExternalStorage", "Scanned " + path + ":");
+                            Log.i("ExternalStorage", "-> uri=" + uri);
+                        }
+                    }
+            );
         } catch (Exception e) {
             Log.e("GifActivity", e.getMessage());
         }
